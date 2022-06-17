@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Mukta&display=swap");
+
+html,
+body {
+    height: 100%;
+    border: 0;
+    margin: 0;
+}
+
+body {
+    background-image: url("./img/background-img.jpg");
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    color: white;
+    font-family: "Mukta", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+}
+
+input {
+    border-radius: 0.5em;
+    padding: 0.5em;
+    border: 1px solid rgb(214, 214, 214);
+}
+
+.current-weather-container {
+    width: 30%;
+    padding: 1em;
+    border: 2px solid white;
+    border-radius: 1em;
+}
