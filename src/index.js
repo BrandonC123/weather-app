@@ -24,10 +24,62 @@ const apiHandler = (() => {
                 response.weather[0].description,
                 response.wind.speed
             );
+
             console.log(weather);
-        } catch {}
+            getWeatherForecast(city);
+            return weather;
+        } catch (error) {
+            console.log(error);
+            alert("City not found");
+        }
     }
-    getWeatherObject("sacramento");
+    async function getWeatherForecast(city) {
+        try {
+            const forecastData = await fetch(
+                `http://api.openweathermap.org/data/2.5/forecast?q=${city}&cnt=7&APPID=${apiKey}`,
+                { mode: "cors" }
+            );
+            const forecast = await forecastData.json();
+            console.log(forecast);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    return {
+        getWeatherObject,
+        getWeatherForecast,
+    };
 })();
 
-const displayHandler = (() => {})();
+const displayHandler = (() => {
+    function fillCurrentWeatherCard(weatherDetails) {
+        console.log(weatherDetails);
+        document.querySelector(".current-weather-location").textContent =
+            weatherDetails.location;
+        document.querySelector(".current-weather-temp").textContent =
+            weatherDetails.temperature;
+        document.querySelector(".current-weather-feels-like").textContent =
+            weatherDetails.feelsLike;
+        document.querySelector(".current-weather-description").textContent =
+            weatherDetails.description;
+        document.querySelector(".current-weather-wind-speed").textContent =
+            weatherDetails.windSpeed;
+    }
+    apiHandler.getWeatherObject("sacramento").then((response) => {
+        fillCurrentWeatherCard(response);
+    });
+    document
+        .querySelector(".location-search-btn")
+        .addEventListener("click", function () {
+            apiHandler
+                .getWeatherObject(
+                    document.getElementById("location-search-bar").value
+                )
+                .then((response) => {
+                    fillCurrentWeatherCard(response);
+                });
+        });
+    return {
+        fillCurrentWeatherCard,
+    };
+})();
