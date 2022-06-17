@@ -1,8 +1,16 @@
 class WeatherDetails {
-    constructor(location, temperature, feelsLike, description, windSpeed) {
+    constructor(
+        location,
+        temperature,
+        feelsLike,
+        condition,
+        description,
+        windSpeed
+    ) {
         this.location = location;
         this.temperature = temperature;
         this.feelsLike = feelsLike;
+        this.condition = condition;
         this.description = description;
         this.windSpeed = windSpeed;
     }
@@ -21,11 +29,10 @@ const apiHandler = (() => {
                 response.name,
                 response.main.temp,
                 response.main.feels_like,
+                response.weather[0].main,
                 response.weather[0].description,
                 response.wind.speed
             );
-
-            console.log(weather);
             getWeatherForecast(city);
             return weather;
         } catch (error) {
@@ -40,7 +47,7 @@ const apiHandler = (() => {
                 { mode: "cors" }
             );
             const forecast = await forecastData.json();
-            console.log(forecast);
+            return forecast;
         } catch (error) {
             console.log(error);
         }
@@ -53,32 +60,101 @@ const apiHandler = (() => {
 
 const displayHandler = (() => {
     function fillCurrentWeatherCard(weatherDetails) {
-        console.log(weatherDetails);
-        document.querySelector(".current-weather-location").textContent =
-            weatherDetails.location;
-        document.querySelector(".current-weather-temp").textContent =
-            weatherDetails.temperature;
-        document.querySelector(".current-weather-feels-like").textContent =
-            weatherDetails.feelsLike;
-        document.querySelector(".current-weather-description").textContent =
-            weatherDetails.description;
-        document.querySelector(".current-weather-wind-speed").textContent =
-            weatherDetails.windSpeed;
+        if (weatherDetails !== undefined) {
+            const iconImg = document.querySelector(".current-weather-icon");
+            document.querySelector(".current-weather-location").textContent =
+                weatherDetails.location;
+            let temp = convertTemp(weatherDetails.temperature);
+            document.querySelector(".current-weather-temp").textContent = temp;
+            document.querySelector(".current-weather-feels-like").textContent =
+                weatherDetails.feelsLike;
+            document.querySelector(".current-weather-description").textContent =
+                weatherDetails.description;
+            document.querySelector(".current-weather-wind-speed").textContent =
+                weatherDetails.windSpeed + " mph";
+            console.log(weatherDetails);
+            const condition = weatherDetails.condition;
+            switch (condition.toLowerCase()) {
+                case "thunderstorm":
+                    iconImg.src = "../dist/img/thunderstorm-icon.svg";
+                    break;
+                case "drizzle":
+                    iconImg.src = "../dist/img/drizzle-icon.svg";
+                    break;
+                case "rain":
+                    iconImg.src = "../dist/img/rain-icon.svg";
+                    break;
+                case "snow":
+                    iconImg.src = "../dist/img/snow-icon.svg";
+                    break;
+                case "clouds":
+                    iconImg.src = "../dist/img/cloud-icon.svg"
+                    break;
+                case "clear":
+                    iconImg.src = "../dist/img/sun-icon.svg";
+                    break;
+            }
+        }
+    }
+    function fillForecast(forecastList) {
+        for (let i = 0; i < forecastList.length; i++) {
+            const forecastCard = document.createElement("div");
+            forecastCard.classList.add("card");
+            const forecastDate = document.createElement("p");
+            const forecastTemp = document.createElement("p");
+            const forecastDescription = document.createElement("p");
+
+            forecastDate.textContent = forecastList[i].dt_txt;
+            forecastTemp.textContent = forecastList[i].main.temp;
+            forecastDescription.textContent =
+                forecastList[i].weather[0].description;
+
+            forecastCard.append(
+                forecastDate,
+                forecastTemp,
+                forecastDescription
+            );
+            document
+                .querySelector(".forecast-container")
+                .appendChild(forecastCard);
+        }
+    }
+    function convertTemp(temp) {
+        // let newTemp = 1.8 * (temp - 273) + 32;
+        let newTemp = temp - 273.15;
+        return Math.round(newTemp);
+    }
+    function searchWeather() {
+        const searchValue = document.getElementById(
+            "location-search-bar"
+        ).value;
+        apiHandler.getWeatherObject(searchValue).then((response) => {
+            fillCurrentWeatherCard(response);
+        });
+        apiHandler.getWeatherForecast(searchValue).then((response) => {
+            console.log(response.list);
+        });
     }
     apiHandler.getWeatherObject("sacramento").then((response) => {
         fillCurrentWeatherCard(response);
     });
+    apiHandler.getWeatherForecast("sacramento").then((response) => {
+        console.log(response);
+        fillForecast(response.list);
+    });
     document
         .querySelector(".location-search-btn")
         .addEventListener("click", function () {
-            apiHandler
-                .getWeatherObject(
-                    document.getElementById("location-search-bar").value
-                )
-                .then((response) => {
-                    fillCurrentWeatherCard(response);
-                });
+            searchWeather();
         });
+    document
+        .getElementById("location-search-bar")
+        .addEventListener("keydown", function (e) {
+            if (e.keyCode === 13) {
+                searchWeather();
+            }
+        });
+
     return {
         fillCurrentWeatherCard,
     };
