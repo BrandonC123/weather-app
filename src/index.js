@@ -49,14 +49,14 @@ const displayHandler = (() => {
             const iconImg = document.querySelector(".current-weather-icon");
             document.querySelector(".current-weather-location").textContent =
                 weatherDetails.location;
-            let temp = convertTemp(weatherDetails.temperature);
-            document.querySelector(".current-weather-temp").textContent = temp;
+            document.querySelector(".current-weather-temp").textContent =
+                convertTempFarenheit(weatherDetails.temperature);
             document.querySelector(".current-weather-feels-like").textContent =
-                weatherDetails.feelsLike;
+                "Feels like " + convertTempFarenheit(weatherDetails.feelsLike);
             document.querySelector(".current-weather-description").textContent =
                 weatherDetails.description;
             document.querySelector(".current-weather-wind-speed").textContent =
-                weatherDetails.windSpeed + " mph";
+                "Wind speed: " + weatherDetails.windSpeed + " mph";
             const condition = weatherDetails.condition;
             switch (condition.toLowerCase()) {
                 case "thunderstorm":
@@ -80,11 +80,14 @@ const displayHandler = (() => {
             }
         }
     }
-   
-    function convertTemp(temp) {
-        // let newTemp = 1.8 * (temp - 273) + 32;
+
+    function convertTempFarenheit(temp) {
+        let newTemp = 1.8 * (temp - 273) + 32;
+        return `${Math.round(newTemp)}° F`;
+    }
+    function convertTempCelsius(temp) {
         let newTemp = temp - 273.15;
-        return Math.round(newTemp);
+        return `${Math.round(newTemp)}° C`;
     }
     function searchWeather() {
         const searchValue = document.getElementById(
@@ -115,41 +118,39 @@ const displayHandler = (() => {
     };
 })();
 
+// function fillForecast(forecastList) {
+//     for (let i = 0; i < forecastList.length; i++) {
+//         const forecastCard = document.createElement("div");
+//         forecastCard.classList.add("card");
+//         const forecastDate = document.createElement("p");
+//         const forecastTemp = document.createElement("p");
+//         const forecastDescription = document.createElement("p");
 
+//         forecastDate.textContent = forecastList[i].dt_txt;
+//         forecastTemp.textContent = forecastList[i].main.temp;
+//         forecastDescription.textContent =
+//             forecastList[i].weather[0].description;
 
- // function fillForecast(forecastList) {
-    //     for (let i = 0; i < forecastList.length; i++) {
-    //         const forecastCard = document.createElement("div");
-    //         forecastCard.classList.add("card");
-    //         const forecastDate = document.createElement("p");
-    //         const forecastTemp = document.createElement("p");
-    //         const forecastDescription = document.createElement("p");
+//         forecastCard.append(
+//             forecastDate,
+//             forecastTemp,
+//             forecastDescription
+//         );
+//         document
+//             .querySelector(".forecast-container")
+//             .appendChild(forecastCard);
+//     }
+// }
 
-    //         forecastDate.textContent = forecastList[i].dt_txt;
-    //         forecastTemp.textContent = forecastList[i].main.temp;
-    //         forecastDescription.textContent =
-    //             forecastList[i].weather[0].description;
-
-    //         forecastCard.append(
-    //             forecastDate,
-    //             forecastTemp,
-    //             forecastDescription
-    //         );
-    //         document
-    //             .querySelector(".forecast-container")
-    //             .appendChild(forecastCard);
-    //     }
-    // }
-
-    // async function getWeatherForecast(city) {
-    //     try {
-    //         const forecastData = await fetch(
-    //             `http://api.openweathermap.org/data/2.5/forecast?q=${city}&cnt=7&APPID=${apiKey}`,
-    //             { mode: "cors" }
-    //         );
-    //         const forecast = await forecastData.json();
-    //         return forecast;
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+// async function getWeatherForecast(city) {
+//     try {
+//         const forecastData = await fetch(
+//             `http://api.openweathermap.org/data/2.5/forecast?q=${city}&cnt=7&APPID=${apiKey}`,
+//             { mode: "cors" }
+//         );
+//         const forecast = await forecastData.json();
+//         return forecast;
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
