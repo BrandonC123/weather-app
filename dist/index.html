@@ -8,15 +8,17 @@
         <title>Weather Forecast</title>
     </head>
     <body>
-        <div class="overall-container">
+        <div class="overall-container container">
             <div class="current-weather-container">
                 <h1 class="current-weather-container-title">Currently:</h1>
-                <p class="current-weather-location">Elk Grove</p>
-                <p class="current-weather-temp">20</p>
-                <p class="current-weather-feels-like">21</p>
-                <p class="current-weather-description">clear sky</p>
-                <p class="current-weather-wind-speed">5 mph</p>
-                <img src="" alt="weather icon">
+                <div class="current-weather-content">
+                    <p class="current-weather-location"></p>
+                    <p class="current-weather-temp"></p>
+                    <p class="current-weather-feels-like"></p>
+                    <p class="current-weather-description"></p>
+                    <p class="current-weather-wind-speed"></p>
+                </div>
+                <img class="current-weather-icon" src="" alt="weather icon" />
             </div>
             <div class="location-search-bar-container">
                 <label for="location-search-bar">Search for a location</label>
@@ -25,6 +27,7 @@
                     placeholder="Search"
                     id="location-search-bar"
                 />
+                <button class="location-search-btn">Search</button>
             </div>
         </div>
         <script src="main.js"></script>
