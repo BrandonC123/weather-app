@@ -33,31 +33,16 @@ const apiHandler = (() => {
                 response.weather[0].description,
                 response.wind.speed
             );
-            getWeatherForecast(city);
             return weather;
         } catch (error) {
             console.log(error);
             alert("City not found");
         }
     }
-    async function getWeatherForecast(city) {
-        try {
-            const forecastData = await fetch(
-                `http://api.openweathermap.org/data/2.5/forecast?q=${city}&cnt=7&APPID=${apiKey}`,
-                { mode: "cors" }
-            );
-            const forecast = await forecastData.json();
-            return forecast;
-        } catch (error) {
-            console.log(error);
-        }
-    }
     return {
         getWeatherObject,
-        getWeatherForecast,
     };
 })();
-
 const displayHandler = (() => {
     function fillCurrentWeatherCard(weatherDetails) {
         if (weatherDetails !== undefined) {
@@ -72,7 +57,6 @@ const displayHandler = (() => {
                 weatherDetails.description;
             document.querySelector(".current-weather-wind-speed").textContent =
                 weatherDetails.windSpeed + " mph";
-            console.log(weatherDetails);
             const condition = weatherDetails.condition;
             switch (condition.toLowerCase()) {
                 case "thunderstorm":
@@ -88,7 +72,7 @@ const displayHandler = (() => {
                     iconImg.src = "../dist/img/snow-icon.svg";
                     break;
                 case "clouds":
-                    iconImg.src = "../dist/img/cloud-icon.svg"
+                    iconImg.src = "../dist/img/cloud-icon.svg";
                     break;
                 case "clear":
                     iconImg.src = "../dist/img/sun-icon.svg";
@@ -96,29 +80,7 @@ const displayHandler = (() => {
             }
         }
     }
-    function fillForecast(forecastList) {
-        for (let i = 0; i < forecastList.length; i++) {
-            const forecastCard = document.createElement("div");
-            forecastCard.classList.add("card");
-            const forecastDate = document.createElement("p");
-            const forecastTemp = document.createElement("p");
-            const forecastDescription = document.createElement("p");
-
-            forecastDate.textContent = forecastList[i].dt_txt;
-            forecastTemp.textContent = forecastList[i].main.temp;
-            forecastDescription.textContent =
-                forecastList[i].weather[0].description;
-
-            forecastCard.append(
-                forecastDate,
-                forecastTemp,
-                forecastDescription
-            );
-            document
-                .querySelector(".forecast-container")
-                .appendChild(forecastCard);
-        }
-    }
+   
     function convertTemp(temp) {
         // let newTemp = 1.8 * (temp - 273) + 32;
         let newTemp = temp - 273.15;
@@ -131,16 +93,9 @@ const displayHandler = (() => {
         apiHandler.getWeatherObject(searchValue).then((response) => {
             fillCurrentWeatherCard(response);
         });
-        apiHandler.getWeatherForecast(searchValue).then((response) => {
-            console.log(response.list);
-        });
     }
     apiHandler.getWeatherObject("sacramento").then((response) => {
         fillCurrentWeatherCard(response);
-    });
-    apiHandler.getWeatherForecast("sacramento").then((response) => {
-        console.log(response);
-        fillForecast(response.list);
     });
     document
         .querySelector(".location-search-btn")
@@ -159,3 +114,42 @@ const displayHandler = (() => {
         fillCurrentWeatherCard,
     };
 })();
+
+
+
+ // function fillForecast(forecastList) {
+    //     for (let i = 0; i < forecastList.length; i++) {
+    //         const forecastCard = document.createElement("div");
+    //         forecastCard.classList.add("card");
+    //         const forecastDate = document.createElement("p");
+    //         const forecastTemp = document.createElement("p");
+    //         const forecastDescription = document.createElement("p");
+
+    //         forecastDate.textContent = forecastList[i].dt_txt;
+    //         forecastTemp.textContent = forecastList[i].main.temp;
+    //         forecastDescription.textContent =
+    //             forecastList[i].weather[0].description;
+
+    //         forecastCard.append(
+    //             forecastDate,
+    //             forecastTemp,
+    //             forecastDescription
+    //         );
+    //         document
+    //             .querySelector(".forecast-container")
+    //             .appendChild(forecastCard);
+    //     }
+    // }
+
+    // async function getWeatherForecast(city) {
+    //     try {
+    //         const forecastData = await fetch(
+    //             `http://api.openweathermap.org/data/2.5/forecast?q=${city}&cnt=7&APPID=${apiKey}`,
+    //             { mode: "cors" }
+    //         );
+    //         const forecast = await forecastData.json();
+    //         return forecast;
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
